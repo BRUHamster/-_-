@@ -2,12 +2,14 @@
 #заготовки для вывода
 msg_input:		.asciz "\n enter the name of input file\n"
 msg_output: 		.asciz "\n enter the name of output file\n"
+msg_console_output:     .asciz "\n do u want to see the result?\n"
 
 #Выделяем место для переменных
-input_file:     .space 1024            # Имя входного файла
-output_file:    .space 1024             # Имя выходного файла
-buffer:         .space 1024              # Буфер для чтения строки
-result:         .space 1024              # Буфер для результатов
+input_file:     .space 4096            # Имя входного файла
+output_file:    .space 4096             # Имя выходного файла
+buffer:         .space 4096              # Буфер для чтения строки
+result:         .space 4096              # Буфер для результатов
+user_choice:     .space 2                 #Для выбора Y или нет
 
 #Символы всякие
 space: 		.byte ' '		 #Пробел(да ну!?)
@@ -29,7 +31,7 @@ main:
     # Прочитать имя файла с консоли
     li a0, 0                  # Стандартный ввод 
     la a1, input_file         # Адрес буфера для строки
-    li a2, 1024               # Максимальное количество байт для чтения
+    li a2, 4096               # Максимальное количество байт для чтения
     li a7, 63                 # ecall для чтения
     ecall
     
@@ -75,7 +77,7 @@ start:
     read_loop:
     mv a0, s0
     la a1, buffer
-    li a2, 1024
+    li a2, 4096
     li a7, 63                  # ecall для чтения
     ecall
     
@@ -146,6 +148,7 @@ valid_write:
     j read_loop
 
 process_done:
+	
     # Закрытие файлов
     mv a0, s0
     li a7, 57
